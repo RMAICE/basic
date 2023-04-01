@@ -19,9 +19,10 @@ export const PutUsersController = async (ctx) => {
     return;
   }
 
-  const results = users.map((user) => ctx.userService.add(user));
+  // const results = await Promise.all(users.map((user) => ctx.userService.add(user)));
+  const results = await ctx.userService.addMultiple(users);
 
   ctx.body = {
-    results: await Promise.all(results),
+    results,
   };
 };
