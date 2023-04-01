@@ -7,7 +7,7 @@ export class DatabaseService {
   }
 
   /**
-   * @returns {Promise<import('mysql2/promise').Connection>}
+   * @returns {Promise<import('mysql2/promise').PoolConnection>}
    */
   async getConnection() {
     return this.pool.getConnection();
@@ -29,6 +29,8 @@ export class DatabaseService {
       await connection.rollback();
       throw error;
     }
+
+    connection.release();
 
     return result;
   }

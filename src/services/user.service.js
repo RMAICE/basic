@@ -24,4 +24,15 @@ export class UserService {
       return { userId, emailId };
     });
   }
+
+  addMultiple(users) {
+    return this.repositoryService.transaction([UserListRepo], async ({ userList }) => {
+      const [userIds, emailIds] = await Promise.all([
+        Promise.all(users.map(({ nickname }) => userList.insert({ nickname }))),
+        Promise.all(users.map(({ email }) => this.emailService.add({ email }))),
+      ]);
+
+      return userIds.map((userId, i) => ({ userId, emailId: emailIds[i] }));
+    });
+  }
 }
